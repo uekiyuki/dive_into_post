@@ -38,6 +38,18 @@ class TeamsController < ApplicationController
     end
   end
 
+  def authority_transfer
+    @team = Team.friendly.find(params[:team_id])
+    if current_user.id == @team.owner_id
+      @user = User.find(params[:user_id])
+      @team.update(owner_id: @user.id)
+      AssignMailer.owner_change_mail(@user.email,@team.name).deliver
+      redirect_to @team,notice: 'リーダー権限を移動しました'
+    else
+      redirect_to @team,notice: 'リーダー権限を移動できませんでした'
+    end
+  end
+
   def destroy
     @team.destroy
     redirect_to teams_url, notice: I18n.t('views.messages.delete_team')
