@@ -41,7 +41,12 @@
                     <tr>
                       <td><%= image_tag 'default.jpg', size: '40x40' %></td>
                       <td><%= assign.user.email %></td>
+                      <% if assign.user_id == current_user.id || @team.owner_id  == current_user.id %>
                       <td><%= link_to I18n.t('views.button.delete'), team_assign_path(@team, assign), method: :delete, class: 'btn btn-sm btn-danger' %></td>
+                      <% end %>
+                      <% if current_user.id == @team.owner_id && assign.user.id != current_user.id %>
+                      <td><%= link_to I18n.t('views.button.ownership_transfer'), team_authority_transfer_path(@team, params: { user_id: assign.user_id }), method: :post, class: 'btn btn-sm btn-info' %></td>
+                      <% end %>
                     </tr>
                   <% end %>
                 </tbody>
